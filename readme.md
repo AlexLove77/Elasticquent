@@ -12,24 +12,31 @@ You must be running _at least_ Elasticsearch 1.0. Elasticsearch 0.9 and below *w
 
 ## Contents
 
-* [Overview](#overview)
-    * [How Elasticquent Works](#how-elasticquent-works)
-* [Setup](#setup)
-    * [Elasticsearch Configuration](#elasticsearch-configuration)
-    * [Indexes and Mapping](#indexes-and-mapping)
-    * [Setting a Custom Index Name](#setting-a-custom-index-name)
-    * [Setting a Custom Type Name](#setting-a-custom-type-name)
-* [Indexing Documents](#indexing-documents)
-* [Searching](#searching)
-    * [Search Collections](#search-collections)
-    * [Search Collection Documents](#search-collection-documents)
-    * [Chunking results from Elastiquent](#chunking-results-from-elastiquent)
-    * [Using the Search Collection Outside of Elasticquent](#using-the-search-collection-outside-of-elasticquent)
-* [More Options](#more-options)
-    * [Document Ids](#document-ids)
-    * [Document Data](#document-data)
-    * [Using Elasticquent With Custom Collections](#using-elasticquetn-with-custom-collections)
-* [Roadmap](#roadmap)
+- [Elasticquent](#elasticquent)
+- [Elasticsearch Requirements](#elasticsearch-requirements)
+  - [Contents](#contents)
+  - [Reporting Issues](#reporting-issues)
+  - [Overview](#overview)
+    - [How Elasticquent Works](#how-elasticquent-works)
+  - [Setup](#setup)
+    - [Elasticsearch Configuration](#elasticsearch-configuration)
+    - [Indexes and Mapping](#indexes-and-mapping)
+    - [Setting a Custom Index Name](#setting-a-custom-index-name)
+    - [Setting a Custom Type Name](#setting-a-custom-type-name)
+  - [Indexing Documents](#indexing-documents)
+  - [Searching](#searching)
+    - [Simple term search](#simple-term-search)
+    - [Query Based Search](#query-based-search)
+    - [Raw queries](#raw-queries)
+    - [Search Collections](#search-collections)
+    - [Search Collection Documents](#search-collection-documents)
+    - [Chunking results from Elastiquent](#chunking-results-from-elastiquent)
+    - [Using the Search Collection Outside of Elasticquent](#using-the-search-collection-outside-of-elasticquent)
+  - [More Options](#more-options)
+    - [Document IDs](#document-ids)
+    - [Document Data](#document-data)
+    - [Using Elasticquent With Custom Collections](#using-elasticquent-with-custom-collections)
+  - [Roadmap](#roadmap)
 
 ## Reporting Issues
 
@@ -251,7 +258,7 @@ By default, Elasticquent will look for the `default_index` key within your confi
 return array(
 
    // Other configuration keys ...
-   
+
    /*
     |--------------------------------------------------------------------------
     | Default Index Name
@@ -260,7 +267,7 @@ return array(
     | This is the index name that Elastiquent will use for all
     | Elastiquent models.
     */
-    
+
    'default_index' => 'my_custom_index_name',
 );
 ```
@@ -338,7 +345,7 @@ The first method is a simple term search that searches all fields.
 The second is a query based search for more complex searching needs:
 
 ```php
-    public static function searchByQuery($query = null, $aggregations = null, $sourceFields = null, $limit = null, $offset = null, $sort = null)
+    public static function searchByQuery($query = null, $aggregations = null, $sourceFields = null, $limit = null, $offset = null, $sort = null, $highlight = null)
 ```
 
 **Example:**

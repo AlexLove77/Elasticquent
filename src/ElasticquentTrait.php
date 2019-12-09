@@ -218,10 +218,11 @@ trait ElasticquentTrait
      * @param int   $limit
      * @param int   $offset
      * @param array $sort
+     * @param array $highlight
      *
      * @return ElasticquentResultCollection
      */
-    public static function searchByQuery($query = null, $aggregations = null, $sourceFields = null, $limit = null, $offset = null, $sort = null)
+    public static function searchByQuery($query = null, $aggregations = null, $sourceFields = null, $limit = null, $offset = null, $sort = null, $highlight = null)
     {
         $instance = new static;
 
@@ -243,6 +244,10 @@ trait ElasticquentTrait
             $params['body']['sort'] = $sort;
         }
 
+        if (!empty($highlight)) {
+            $params['body']['highlight'] = $highlight;
+        }
+
         $result = $instance->getElasticSearchClient()->search($params);
 
         return static::hydrateElasticsearchResult($result);
@@ -259,7 +264,7 @@ trait ElasticquentTrait
     public static function complexSearch($params)
     {
         $instance = new static;
-        
+
         $basicParams = $instance->getBasicEsParams();
         $params = array_merge($params, $basicParams);
 
@@ -589,13 +594,13 @@ trait ElasticquentTrait
     public function newFromHitBuilder($hit = array())
     {
         $key_name = $this->getKeyName();
-        
+
         $attributes = $hit['_source'];
 
         if (isset($hit['_id'])) {
             $attributes[$key_name] = is_numeric($hit['_id']) ? intval($hit['_id']) : $hit['_id'];
         }
-        
+
         // Add fields to attributes
         if (isset($hit['fields'])) {
             foreach ($hit['fields'] as $key => $value) {
@@ -616,6 +621,11 @@ trait ElasticquentTrait
         // Set our document version if it's
         if (isset($hit['_version'])) {
             $instance->documentVersion = $hit['_version'];
+        }
+
+        // Highlight support
+        if (isset($hit['highlight'])) {
+            $instance->highlight = $hit['highlight'];
         }
 
         return $instance;
@@ -688,7 +698,7 @@ trait ElasticquentTrait
         $items = array_map(function ($item) use ($instance, $parentRelation) {
             // Convert all null relations into empty arrays
             $item = $item ?: [];
-            
+
             return static::newFromBuilderRecursive($instance, $item, $parentRelation);
         }, $items);
 
